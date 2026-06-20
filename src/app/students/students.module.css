@@ -1,0 +1,175 @@
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-8);
+  animation: fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.pageTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.searchBox {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.searchInput {
+  padding-left: 36px !important;
+  width: 260px;
+}
+
+/* ─── Student Grid ───────────────────────────────────────────── */
+.studentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-5);
+}
+
+.studentCard {
+  padding: var(--space-6);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.studentCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.studentCard:hover::before {
+  opacity: 1;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.avatarGlow {
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--radius-xl);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.studentCard:hover .avatarGlow {
+  opacity: 0.3;
+}
+
+.studentInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.studentNameEn {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.studentNameAr {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-arabic);
+  margin-top: 2px;
+}
+
+.cardActions {
+  display: flex;
+  gap: var(--space-1);
+}
+
+/* ─── Mini Stats ─────────────────────────────────────────────── */
+.miniStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.miniStat {
+  text-align: center;
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.miniStatValue {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.miniStatLabel {
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .pageHeader {
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-top: var(--space-12);
+  }
+  .headerActions {
+    flex-wrap: wrap;
+  }
+  .searchInput {
+    width: 100% !important;
+  }
+  .studentGrid {
+    grid-template-columns: 1fr;
+  }
+  .pageTitle {
+    font-size: 1.375rem;
+  }
+}

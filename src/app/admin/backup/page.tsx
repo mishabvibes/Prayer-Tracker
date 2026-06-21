@@ -100,116 +100,133 @@ export default function AdminBackupPage() {
   if (dataLoading || !teacher) return <div style={{ padding: 'var(--space-8)' }}>Loading...</div>;
 
   return (
-    <div style={{ animation: 'fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both', maxWidth: 900 }}>
-      <div style={{ marginBottom: 'var(--space-8)' }}>
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Database size={24} style={{ color: 'var(--primary-400)' }} />
-          Advanced Backup & Export
-        </h1>
-        <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: 4 }}>
-          Generate CSV backups of all system data. Downloads will automatically save to your device.
-        </p>
+    <div style={{ animation: 'fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both', maxWidth: 1000, margin: '0 auto' }}>
+      
+      {/* Header */}
+      <div className="page-header-mobile">
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)' }}>
+            <div style={{ padding: 10, background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary-400)', borderRadius: 'var(--radius-lg)' }}>
+              <Database size={24} />
+            </div>
+            <h1 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.03em' }}>
+              Advanced Backup & Export
+            </h1>
+          </div>
+          <p style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
+            Generate and download raw CSV backups of all system data tables securely.
+          </p>
+        </div>
       </div>
 
       {exportStatus && (
-        <div style={{ 
+        <div className="animate-in" style={{ 
           padding: 'var(--space-4)', 
           background: exportStatus.includes('Error') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(99, 102, 241, 0.1)',
           color: exportStatus.includes('Error') ? 'var(--danger)' : 'var(--primary-300)',
           borderRadius: 'var(--radius-md)',
           marginBottom: 'var(--space-6)',
           border: `1px solid ${exportStatus.includes('Error') ? 'rgba(239, 68, 68, 0.2)' : 'rgba(99, 102, 241, 0.2)'}`,
-          fontWeight: 500
+          fontWeight: 500,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--space-3)'
         }}>
+          {exportStatus.includes('Error') ? <Shield size={18} /> : <Download size={18} />}
           {exportStatus}
         </div>
       )}
 
       {/* Full Backup Panel */}
-      <div className="glass-panel-static" style={{ padding: 'var(--space-8)', marginBottom: 'var(--space-6)', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-        <div style={{ display: 'inline-flex', padding: 16, borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', marginBottom: 'var(--space-4)' }}>
-          <Download size={32} />
+      <div className="glass-panel flex-between-mobile-col" style={{ padding: 'var(--space-6)', marginBottom: 'var(--space-8)', border: '1px solid rgba(16, 185, 129, 0.2)', background: 'linear-gradient(to right, rgba(16, 185, 129, 0.05), transparent)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+          <div style={{ padding: 16, borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)' }}>
+            <Download size={28} />
+          </div>
+          <div>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: 4 }}>Full System Backup</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', maxWidth: 400 }}>
+              Download a complete CSV backup of every table. Your browser may ask for permission to download multiple files.
+            </p>
+          </div>
         </div>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: 'var(--space-2)' }}>Export All System Data</h2>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-6)', maxWidth: 500, margin: '0 auto var(--space-6)' }}>
-          Download a complete CSV backup of every table in the database. 
-          Your browser may ask for permission to download multiple files.
-        </p>
         <button 
-          className="btn btn-primary btn-lg" 
+          className="btn btn-lg" 
           onClick={handleExportAll} 
           disabled={isExporting}
-          style={{ background: 'var(--primary-600)', border: 'none', minWidth: 250 }}
+          style={{ background: 'var(--success)', color: '#000', fontWeight: 700, whiteSpace: 'nowrap', width: '100%', maxWidth: '250px', justifyContent: 'center' }}
         >
-          {isExporting ? 'Processing Backup...' : 'Generate Full CSV Backup'}
+          {isExporting ? 'Processing...' : 'Generate Full Backup'}
         </button>
       </div>
 
       {/* Individual Table Exports */}
-      <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: 'var(--space-4)', marginTop: 'var(--space-8)' }}>
-        Specific Table Exports
+      <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <FileText size={18} className="text-primary-400" /> Specific Table Exports
       </h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 'var(--space-4)' }}>
+      
+      <div className="grid-cols-4">
         
-        <div className="glass-panel-static" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <div className="glass-panel" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ padding: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)' }}>
-              <Shield size={20} className="text-primary-400" />
+            <div style={{ padding: 10, background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary-400)', borderRadius: 'var(--radius-md)' }}>
+              <Shield size={20} />
             </div>
             <div>
               <div style={{ fontWeight: 600 }}>Teachers</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Staff & Admin accounts</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Staff accounts</div>
             </div>
           </div>
-          <button className="btn btn-glass" onClick={() => handleExportTable('teachers')} disabled={isExporting}>
-            Export CSV
+          <button className="btn btn-glass" onClick={() => handleExportTable('teachers')} disabled={isExporting} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+            <Download size={14} /> Export CSV
           </button>
         </div>
 
-        <div className="glass-panel-static" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <div className="glass-panel" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ padding: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)' }}>
-              <BookOpen size={20} className="text-success" />
+            <div style={{ padding: 10, background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', borderRadius: 'var(--radius-md)' }}>
+              <BookOpen size={20} />
             </div>
             <div>
               <div style={{ fontWeight: 600 }}>Classes</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>All class configurations</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>All configurations</div>
             </div>
           </div>
-          <button className="btn btn-glass" onClick={() => handleExportTable('classes')} disabled={isExporting}>
-            Export CSV
+          <button className="btn btn-glass" onClick={() => handleExportTable('classes')} disabled={isExporting} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+            <Download size={14} /> Export CSV
           </button>
         </div>
 
-        <div className="glass-panel-static" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <div className="glass-panel" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ padding: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)' }}>
-              <Users size={20} className="text-accent-400" />
+            <div style={{ padding: 10, background: 'rgba(251, 191, 36, 0.1)', color: 'var(--accent-400)', borderRadius: 'var(--radius-md)' }}>
+              <Users size={20} />
             </div>
             <div>
               <div style={{ fontWeight: 600 }}>Students</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>All enrolled students</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Enrolled students</div>
             </div>
           </div>
-          <button className="btn btn-glass" onClick={() => handleExportTable('students')} disabled={isExporting}>
-            Export CSV
+          <button className="btn btn-glass" onClick={() => handleExportTable('students')} disabled={isExporting} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+            <Download size={14} /> Export CSV
           </button>
         </div>
 
-        <div className="glass-panel-static" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <div className="glass-panel" style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ padding: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)' }}>
-              <FileText size={20} style={{ color: 'var(--purple)' }} />
+            <div style={{ padding: 10, background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6', borderRadius: 'var(--radius-md)' }}>
+              <FileText size={20} />
             </div>
             <div>
               <div style={{ fontWeight: 600 }}>Daily Records</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Attendance & behavior logs</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Attendance & logs</div>
             </div>
           </div>
-          <button className="btn btn-glass" onClick={() => handleExportTable('daily_records')} disabled={isExporting}>
-            Export CSV
+          <button className="btn btn-glass" onClick={() => handleExportTable('daily_records')} disabled={isExporting} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+            <Download size={14} /> Export CSV
           </button>
         </div>
+
       </div>
 
     </div>

@@ -1,8 +1,73 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Joyride, EventData, STATUS, Step } from 'react-joyride';
+import { Joyride, EventData, STATUS, Step, TooltipRenderProps } from 'react-joyride';
 import { usePathname } from 'next/navigation';
+import { Sparkles, X, ChevronRight, ChevronLeft, Check } from 'lucide-react';
+import styles from './ProductTour.module.css';
+
+function Tooltip({
+  continuous,
+  index,
+  step,
+  backProps,
+  closeProps,
+  primaryProps,
+  tooltipProps,
+  isLastStep,
+  size,
+}: TooltipRenderProps) {
+  return (
+    <div className={styles.tooltip} {...tooltipProps}>
+      <div className={styles.header}>
+        <div className={styles.title}>
+          <Sparkles size={16} className={styles.icon} />
+          {step.title || 'Quick Guide'}
+        </div>
+        <button
+          {...closeProps}
+          className="btn-icon"
+          style={{ background: 'transparent', color: 'var(--text-tertiary)' }}
+        >
+          <X size={16} />
+        </button>
+      </div>
+
+      <div className={styles.content}>
+        {step.content}
+      </div>
+
+      <div className={styles.footer}>
+        <div className={styles.progress}>
+          {Array.from({ length: size }).map((_, i) => (
+            <div
+              key={i}
+              className={`${styles.dot} ${i === index ? styles.dotActive : ''}`}
+            />
+          ))}
+        </div>
+        <div className={styles.actions}>
+          {index > 0 && (
+            <button {...backProps} className={styles.btnBack}>
+              Back
+            </button>
+          )}
+          <button {...primaryProps} className={styles.btnNext}>
+            {isLastStep ? (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                Finish <Check size={14} />
+              </span>
+            ) : (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                Next <ChevronRight size={14} />
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function ProductTour() {
   const [isMounted, setIsMounted] = useState(false);
@@ -31,32 +96,38 @@ export default function ProductTour() {
     {
       target: 'body',
       placement: 'center',
-      content: 'Welcome to FajrFlow! Let\'s take a quick tour to get you started.',
+      title: 'Welcome to FajrFlow!',
+      content: 'Let\'s take a quick tour to get you started with tracking your class seamlessly.',
       skipBeacon: true,
     },
     {
       target: 'nav', // Sidebar
+      title: 'Navigation Hub',
       content: 'Here is your main navigation. Access your dashboard, students, monthly grid, and settings from here.',
       placement: 'right',
     },
     {
       target: 'nav [href="/dashboard"]',
-      content: 'The Dashboard gives you a bird\'s-eye view of your class performance and recent activities.',
+      title: 'Dashboard Overview',
+      content: 'The Dashboard gives you a bird\'s-eye view of your class performance, attendance rates, and recent activities.',
       placement: 'right',
     },
     {
       target: 'nav [href="/students"]',
-      content: 'Manage your students here. Add new students and view their individual profiles and progress.',
+      title: 'Manage Students',
+      content: 'Add new students to your class, view their individual profiles, and monitor their overall progress.',
       placement: 'right',
     },
     {
       target: 'nav [href="/grid"]',
-      content: 'The Monthly Grid is where you\'ll log daily prayers, attendance, and behaviour scores for your entire class.',
+      title: 'Monthly Tracker Grid',
+      content: 'This is where you\'ll log daily prayers, mark attendance, and record behaviour scores for your entire class efficiently.',
       placement: 'right',
     },
     {
       target: 'nav [href="/settings"]',
-      content: 'Update your class details and application settings here.',
+      title: 'Class Settings',
+      content: 'Update your class details, manage application settings, and customize your experience here.',
       placement: 'right',
     },
   ];
@@ -78,37 +149,12 @@ export default function ProductTour() {
       run={run}
       scrollToFirstStep
       steps={steps}
+      tooltipComponent={Tooltip}
       options={{
         zIndex: 10000,
-        primaryColor: '#6366f1', // var(--primary-500)
-        backgroundColor: '#1e1e2d',
-        textColor: '#e2e8f0',
+        primaryColor: '#6366f1',
+        overlayColor: 'rgba(0, 0, 0, 0.5)',
         arrowColor: '#1e1e2d',
-        overlayColor: 'rgba(0, 0, 0, 0.6)',
-        showProgress: true,
-        buttons: ['back', 'primary', 'skip'],
-      }}
-      styles={{
-        buttonClose: {
-          display: 'none',
-        },
-        buttonSkip: {
-          color: '#94a3b8',
-        },
-        buttonBack: {
-          color: '#e2e8f0',
-        },
-        tooltip: {
-          borderRadius: '12px',
-          padding: '20px',
-        },
-        tooltipContainer: {
-          textAlign: 'left',
-        },
-        buttonPrimary: {
-          borderRadius: '8px',
-          padding: '8px 16px',
-        }
       }}
     />
   );

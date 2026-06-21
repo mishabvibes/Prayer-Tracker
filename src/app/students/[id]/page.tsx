@@ -62,15 +62,12 @@ export default function StudentProfilePage() {
     });
   }, [monthRecords]);
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (!noteContent.trim()) return;
-    addNote({
-      id: `note-${Date.now()}`,
+    await addNote({
       studentId,
       tag: noteTag,
       content: noteContent,
-      createdAt: new Date().toISOString().slice(0, 10),
-      createdBy: 'teacher-001',
     });
     setNoteContent('');
   };

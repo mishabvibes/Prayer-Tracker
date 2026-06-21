@@ -39,16 +39,9 @@ export default function StudentsPage() {
     );
   }, [students, search]);
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!newNameEn.trim()) return;
-    addStudent({
-      id: `student-${Date.now()}`,
-      nameAr: newNameAr || newNameEn,
-      nameEn: newNameEn,
-      classId: 'class-001',
-      parentToken: `token-${Date.now()}`,
-      createdAt: new Date().toISOString().slice(0, 10),
-    });
+    await addStudent(newNameAr || newNameEn, newNameEn);
     setNewNameEn('');
     setNewNameAr('');
     setShowAdd(false);

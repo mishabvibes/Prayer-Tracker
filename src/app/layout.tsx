@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
-import Sidebar from "@/components/Sidebar/Sidebar";
+import AppShell from "@/components/AppShell/AppShell";
 
 export const metadata: Metadata = {
   title: "Swala Tracker — جدول السير والسلوك",
@@ -18,15 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AppProvider>
-          <Sidebar />
-          <main style={{
-            marginLeft: 'var(--sidebar-width)',
-            minHeight: '100vh',
-            padding: '32px',
-            transition: 'margin-left 250ms cubic-bezier(0.2, 0, 0, 1)',
-          }}>
+          <AppShell>
             {children}
-          </main>
+          </AppShell>
         </AppProvider>
       </body>
     </html>

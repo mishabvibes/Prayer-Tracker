@@ -5,18 +5,24 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   LayoutDashboard, Users, CalendarDays, ClipboardList,
-  BarChart3, Download, Settings, Menu, X, BookOpen,
+  BarChart3, Download, Settings, Menu, X, BookOpen, LogOut, Shield, Database
 } from 'lucide-react';
 import { useApp } from '@/lib/context';
 import styles from './Sidebar.module.css';
 
-const NAV_ITEMS = [
-  { label: 'Dashboard', href: '/', icon: LayoutDashboard },
+const TEACHER_NAV_ITEMS = [
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Students', href: '/students', icon: Users },
   { label: 'Monthly Grid', href: '/grid', icon: CalendarDays },
   { label: 'Homework', href: '/homework', icon: ClipboardList },
   { label: 'Analytics', href: '/analytics', icon: BarChart3 },
   { label: 'Export', href: '/export', icon: Download },
+];
+
+const ADMIN_NAV_ITEMS = [
+  { label: 'System Overview', href: '/admin', icon: LayoutDashboard },
+  { label: 'System Management', href: '/admin/manage', icon: Shield },
+  { label: 'Advanced Backup', href: '/admin/backup', icon: Database },
 ];
 
 const SETTINGS_ITEMS = [
@@ -25,11 +31,11 @@ const SETTINGS_ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { teacher, classInfo, students } = useApp();
+  const { teacher, classInfo, students, logout } = useApp();
   const [isOpen, setIsOpen] = useState(false);
 
   const isActive = (href: string) => {
-    if (href === '/') return pathname === '/';
+    if (href === '/dashboard') return pathname === '/dashboard';
     return pathname.startsWith(href);
   };
 
@@ -71,25 +77,27 @@ export default function Sidebar() {
             </button>
           </div>
 
-          {/* Class info pill */}
-          <div style={{
-            padding: '8px 12px',
-            background: 'rgba(99, 102, 241, 0.08)',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid rgba(99, 102, 241, 0.12)',
-            marginBottom: '8px',
-          }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: 2 }}>Current Class</div>
-            <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--primary-300)' }}>
-              <BookOpen size={13} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
-              {classInfo.name}
+          {/* Class info pill (Only for Teachers) */}
+          {teacher?.role !== 'admin' && (
+            <div style={{
+              padding: '8px 12px',
+              background: 'rgba(99, 102, 241, 0.08)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid rgba(99, 102, 241, 0.12)',
+              marginBottom: '8px',
+            }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: 2 }}>Current Class</div>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--primary-300)' }}>
+                <BookOpen size={13} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                {classInfo?.name || 'My Class'}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Main Nav */}
           <nav className={styles.nav}>
             <div className={styles.navSection}>Main</div>
-            {NAV_ITEMS.map(item => (
+            {(teacher?.role === 'admin' ? ADMIN_NAV_ITEMS : TEACHER_NAV_ITEMS).map(item => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -121,12 +129,15 @@ export default function Sidebar() {
           {/* User card */}
           <div className={styles.userCard}>
             <div className={styles.userAvatar}>
-              {teacher.name.charAt(0)}
+              {teacher?.name?.charAt(0) || 'T'}
             </div>
             <div className={styles.userInfo}>
-              <span className={styles.userName}>{teacher.name}</span>
-              <span className={styles.userRole}>{teacher.role === 'admin' ? 'Admin Teacher' : 'Teacher'}</span>
+              <span className={styles.userName}>{teacher?.name || 'Teacher'}</span>
+              <span className={styles.userRole}>{teacher?.role === 'admin' ? 'Admin Teacher' : 'Teacher'}</span>
             </div>
+            <button className="btn-icon" onClick={logout} title="Sign Out" style={{ marginLeft: 'auto', color: 'var(--text-tertiary)' }}>
+              <LogOut size={14} />
+            </button>
           </div>
         </div>
       </aside>

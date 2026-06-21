@@ -6,9 +6,13 @@ import { useApp } from '@/lib/context';
 import { HomeworkStatus } from '@/lib/types';
 
 export default function HomeworkPage() {
-  const { students, assignments, homeworks } = useApp();
+  const { students, assignments, homeworks, addAssignment, updateHomeworkStatus } = useApp();
   const [filterStatus, setFilterStatus] = useState<HomeworkStatus | 'all'>('all');
   const [filterAssignment, setFilterAssignment] = useState<string>('all');
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newDueDate, setNewDueDate] = useState('');
 
   const filtered = useMemo(() => {
     return homeworks.filter(h => {
@@ -48,6 +52,17 @@ export default function HomeworkPage() {
     });
   }, [assignments, homeworks]);
 
+  const handleAddAssignment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim() || !newDueDate) return;
+    
+    await addAssignment(newTitle, newDueDate);
+    
+    setIsModalOpen(false);
+    setNewTitle('');
+    setNewDueDate('');
+  };
+
   return (
     <div style={{ animation: 'fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-8)', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
@@ -57,6 +72,9 @@ export default function HomeworkPage() {
             {assignments.length} assignments · {students.length} students
           </p>
         </div>
+        <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
+          + Create Assignment
+        </button>
       </div>
 
       {/* Assignment Cards */}
@@ -136,9 +154,16 @@ export default function HomeworkPage() {
                     </td>
                     <td style={{ padding: '10px 16px', color: 'var(--text-secondary)' }}>{assignment.title}</td>
                     <td style={{ padding: '10px 16px', textAlign: 'center' }}>
-                      <span className={`badge ${statusClass(hw.status)}`}>
-                        {statusIcon(hw.status)} {hw.status}
-                      </span>
+                      <select 
+                        className={`badge ${statusClass(hw.status)}`}
+                        style={{ background: 'transparent', border: 'none', appearance: 'none', cursor: 'pointer', textAlign: 'center', width: '100%', padding: '4px' }}
+                        value={hw.status}
+                        onChange={(e) => updateHomeworkStatus(hw.studentId, hw.assignmentId, e.target.value as HomeworkStatus)}
+                      >
+                        <option value="submitted" style={{ color: 'black' }}>Submitted</option>
+                        <option value="late" style={{ color: 'black' }}>Late</option>
+                        <option value="missing" style={{ color: 'black' }}>Missing</option>
+                      </select>
                     </td>
                     <td style={{ padding: '10px 16px', textAlign: 'right', color: 'var(--text-tertiary)' }}>
                       {new Date(assignment.dueDate).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
@@ -150,6 +175,33 @@ export default function HomeworkPage() {
           </table>
         </div>
       </div>
+
+      {/* Create Modal */}
+      {isModalOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100
+        }} onClick={() => setIsModalOpen(false)}>
+          <div className="glass-panel" style={{ width: 400, padding: 'var(--space-6)' }} onClick={e => e.stopPropagation()}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 'var(--space-4)' }}>New Assignment</h3>
+            <form onSubmit={handleAddAssignment}>
+              <div style={{ marginBottom: 'var(--space-4)' }}>
+                <label className="label">Title</label>
+                <input className="input" autoFocus value={newTitle} onChange={e => setNewTitle(e.target.value)} required />
+              </div>
+              <div style={{ marginBottom: 'var(--space-6)' }}>
+                <label className="label">Due Date</label>
+                <input className="input" type="date" value={newDueDate} onChange={e => setNewDueDate(e.target.value)} required />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-3)' }}>
+                <button type="button" className="btn btn-glass" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Create Assignment</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

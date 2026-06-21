@@ -9,16 +9,17 @@ export type NoteTag = 'behaviour' | 'health' | 'academic';
 
 export interface Teacher {
   id: string;
+  authId: string;
   email: string;
   name: string;
   role: UserRole;
+  status: 'active' | 'suspended';
   classId: string;
 }
 
 export interface ClassInfo {
   id: string;
   name: string;
-  lessonName: string;
   location: string;
   teacherId: string;
   createdAt: string;

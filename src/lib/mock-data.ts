@@ -28,16 +28,17 @@ function randomChoice<T>(arr: T[]): T {
 // ─── Static Entities ────────────────────────────────────────────
 export const CURRENT_TEACHER: Teacher = {
   id: 'teacher-001',
+  authId: 'auth-001',
   email: 'ustadh.ahmad@school.edu',
   name: 'Ustadh Ahmad',
   role: 'admin',
+  status: 'active',
   classId: 'class-001',
 };
 
 export const CURRENT_CLASS: ClassInfo = {
   id: 'class-001',
   name: 'Halaqah Al-Noor',
-  lessonName: 'صفة الصلاة',
   location: 'Masjid Al-Rahman — Room 3',
   teacherId: 'teacher-001',
   createdAt: '2026-01-15',

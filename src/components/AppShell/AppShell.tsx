@@ -4,6 +4,7 @@ import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/lib/context';
 import Sidebar from '@/components/Sidebar/Sidebar';
+import ProductTour from '@/components/ProductTour/ProductTour';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, loginRole, teacher } = useApp();
@@ -50,6 +51,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <main className="app-main-content">
         {children}
       </main>
+      <ProductTour />
     </>
   );
 }

@@ -121,8 +121,8 @@ export default function SettingsPage() {
               width: 96, height: 96,
               borderRadius: 'var(--radius-2xl)',
               background: isAdmin 
-                ? 'linear-gradient(135deg, var(--primary-400), var(--accent-600))'
-                : 'linear-gradient(135deg, var(--accent-400), var(--success))',
+                ? 'var(--primary-600)'
+                : 'var(--success)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-inverse)',
               flexShrink: 0,
@@ -202,15 +202,15 @@ export default function SettingsPage() {
             {/* Class Stats */}
             {classInfo && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
-                <div className="glass-panel-static" style={{ padding: 'var(--space-4)', textAlign: 'center', background: 'linear-gradient(to bottom right, rgba(255,255,255,0.05), transparent)' }}>
+                <div className="glass-panel-static" style={{ padding: 'var(--space-4)', textAlign: 'center', background: 'rgba(255,255,255,0.02)' }}>
                   <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-300)' }}>{students.length}</div>
                   <div style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Students</div>
                 </div>
-                <div className="glass-panel-static" style={{ padding: 'var(--space-4)', textAlign: 'center', background: 'linear-gradient(to bottom right, rgba(255,255,255,0.05), transparent)' }}>
+                <div className="glass-panel-static" style={{ padding: 'var(--space-4)', textAlign: 'center', background: 'rgba(255,255,255,0.02)' }}>
                   <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--success)' }}>1</div>
                   <div style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Teacher</div>
                 </div>
-                <div className="glass-panel-static" style={{ padding: 'var(--space-4)', textAlign: 'center', background: 'linear-gradient(to bottom right, rgba(255,255,255,0.05), transparent)' }}>
+                <div className="glass-panel-static" style={{ padding: 'var(--space-4)', textAlign: 'center', background: 'rgba(255,255,255,0.02)' }}>
                   <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-400)' }}>{teacher?.status === 'suspended' ? 'Suspended' : 'Active'}</div>
                   <div style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</div>
                 </div>

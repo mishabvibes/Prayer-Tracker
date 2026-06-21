@@ -54,7 +54,7 @@ export default function LandingPage() {
                   Get Started <ArrowRight size={18} />
                 </Link>
                 <Link href="/login" className={styles.secondaryBtn}>
-                  View Demo
+                  Access Parent Portal
                 </Link>
               </>
             )}

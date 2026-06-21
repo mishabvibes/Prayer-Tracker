@@ -139,7 +139,7 @@ export default function AdminBackupPage() {
           className="btn btn-primary btn-lg" 
           onClick={handleExportAll} 
           disabled={isExporting}
-          style={{ background: 'linear-gradient(135deg, var(--success), var(--primary-500))', border: 'none', minWidth: 250 }}
+          style={{ background: 'var(--primary-600)', border: 'none', minWidth: 250 }}
         >
           {isExporting ? 'Processing Backup...' : 'Generate Full CSV Backup'}
         </button>

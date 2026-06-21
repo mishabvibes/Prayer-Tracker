@@ -132,7 +132,7 @@ export default function AnalyticsPage() {
                   <div style={{ height: 8, borderRadius: 4, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
                     <div style={{
                       height: '100%', width: barWidth(p.percent),
-                      background: `linear-gradient(90deg, ${prayerColors[i]}, ${prayerColors[i]}88)`,
+                      background: prayerColors[i],
                       borderRadius: 4,
                       transition: 'width 0.8s cubic-bezier(0.2, 0, 0, 1)',
                     }} />

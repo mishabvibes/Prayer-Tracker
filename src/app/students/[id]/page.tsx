@@ -94,7 +94,7 @@ export default function StudentProfilePage() {
 
       {/* Profile Header */}
       <div className={styles.profileHeader}>
-        <div className={styles.profileAvatar} style={{ background: 'linear-gradient(135deg, var(--primary-500), #8b5cf6)' }}>
+        <div className={styles.profileAvatar} style={{ background: 'var(--primary-600)' }}>
           {student.nameEn.charAt(0)}
         </div>
         <div className={styles.profileNames}>

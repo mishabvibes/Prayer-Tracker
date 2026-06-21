@@ -8,14 +8,14 @@ import { getAttendanceRate, getPrayerCompletionRate, getAvgBehaviour } from '@/l
 import styles from './students.module.css';
 
 const AVATAR_COLORS = [
-  'linear-gradient(135deg, #6366f1, #8b5cf6)',
-  'linear-gradient(135deg, #f59e0b, #d97706)',
-  'linear-gradient(135deg, #34d399, #10b981)',
-  'linear-gradient(135deg, #f87171, #ef4444)',
-  'linear-gradient(135deg, #60a5fa, #3b82f6)',
-  'linear-gradient(135deg, #f0abfc, #d946ef)',
-  'linear-gradient(135deg, #fb923c, #ea580c)',
-  'linear-gradient(135deg, #22d3ee, #06b6d4)',
+  '#6366f1',
+  '#f59e0b',
+  '#10b981',
+  '#ef4444',
+  '#3b82f6',
+  '#d946ef',
+  '#ea580c',
+  '#06b6d4',
 ];
 
 export default function StudentsPage() {

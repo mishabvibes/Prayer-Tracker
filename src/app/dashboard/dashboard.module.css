@@ -280,15 +280,15 @@
 }
 
 .rank1 {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  background: #fbbf24;
   color: #1a1a2e;
 }
 .rank2 {
-  background: linear-gradient(135deg, #94a3b8, #64748b);
+  background: #94a3b8;
   color: #fff;
 }
 .rank3 {
-  background: linear-gradient(135deg, #d97706, #b45309);
+  background: #d97706;
   color: #fff;
 }
 .rankDefault {

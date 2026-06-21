@@ -189,7 +189,7 @@ export default function ExportPage() {
                     alignItems: 'center',
                     gap: 'var(--space-4)',
                     padding: 'var(--space-5)',
-                    background: isSelected ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05))' : 'rgba(255,255,255,0.02)',
+                    background: isSelected ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255,255,255,0.02)',
                     border: `1px solid ${isSelected ? 'var(--primary-400)' : 'var(--glass-border)'}`,
                     borderRadius: 'var(--radius-xl)',
                     cursor: 'pointer',
@@ -245,7 +245,7 @@ export default function ExportPage() {
             padding: 'var(--space-6)', 
             position: 'sticky', 
             top: 'var(--space-6)',
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))',
+            background: 'rgba(255,255,255,0.02)',
             boxShadow: 'var(--glass-shadow-lg)'
           }}>
             <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: 'var(--space-5)', borderBottom: '1px solid var(--glass-border)', paddingBottom: 'var(--space-4)' }}>

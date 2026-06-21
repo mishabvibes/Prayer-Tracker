@@ -59,7 +59,7 @@ export default function ParentPortal() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-5)' }}>
           <div style={{
             width: 64, height: 64, borderRadius: 'var(--radius-xl)',
-            background: 'linear-gradient(135deg, var(--primary-500), #8b5cf6)',
+            background: 'var(--primary-600)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '1.75rem', fontWeight: 700, color: 'white',
           }}>

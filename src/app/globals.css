@@ -3,10 +3,12 @@
    Inspired by visionOS / Apple Vision Pro
    ═══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zeyada&family=Inter:wght@300;400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap');
 
 /* ─── Design Tokens ──────────────────────────────────────────── */
 :root {
+  --font-logo: 'Zeyada', cursive;
+  
   /* Spatial Background */
   --bg-mesh-1: #0a0a1a;
   --bg-mesh-2: #0d1033;
@@ -545,9 +547,146 @@ body::after {
   gap: var(--space-3);
 }
 
-/* ─── Responsive ─────────────────────────────────────────────── */
+/* ─── Responsive Utilities ─────────────────────────────────────────── */
+.grid-cols-1, .grid-cols-2, .grid-cols-3, .grid-cols-4, .grid-cols-5 {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.grid-cols-1 { grid-template-columns: 1fr; }
+
+@media (min-width: 768px) {
+  .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-cols-5 { grid-template-columns: repeat(5, 1fr); }
+}
+
+@media (max-width: 767px) {
+  .grid-cols-2, .grid-cols-3, .grid-cols-4, .grid-cols-5 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.flex-row-mobile-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+@media (min-width: 768px) {
+  .flex-row-mobile-col {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.flex-row-mobile-col-reverse {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-4);
+}
+@media (min-width: 768px) {
+  .flex-row-mobile-col-reverse {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.flex-between-mobile-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+@media (min-width: 768px) {
+  .flex-between-mobile-col {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.flex-start-mobile-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+@media (min-width: 768px) {
+  .flex-start-mobile-col {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.page-header-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--glass-border);
+}
+@media (min-width: 768px) {
+  .page-header-mobile {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+/* Base App Layout Overrides */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: var(--space-6);
+}
+.prayer-grid-mobile {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-3);
+}
+
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 768px) {
   :root {
     --sidebar-width: 0px;
   }
+  
+  .app-main-content {
+    padding: var(--space-4) !important;
+    padding-top: calc(var(--space-12) + var(--space-4)) !important; 
+  }
+
+  .app-parent-content {
+    padding: var(--space-4) !important;
+  }
+
+  .prayer-grid-mobile {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
+
+@media (max-width: 480px) {
+  .prayer-grid-mobile {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.app-main-content {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  padding: 32px;
+  transition: margin-left 250ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.app-parent-content {
+  min-height: 100vh;
+  padding: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+

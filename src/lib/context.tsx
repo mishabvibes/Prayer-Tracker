@@ -406,7 +406,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             margin: '0 auto 16px',
           }} />
           <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-          <p>Loading Swala Tracker...</p>
+          <p>Loading FajrFlow...</p>
         </div>
       </div>
     );

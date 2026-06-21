@@ -17,6 +17,11 @@ export default function SettingsPage() {
 
   const isAdmin = teacher?.role === 'admin';
 
+  const isDirty = 
+    teacherName !== (teacher?.name || '') ||
+    className !== (classInfo?.name || '') ||
+    location !== (classInfo?.location || '');
+
   useEffect(() => {
     if (classInfo) {
       setClassName(classInfo.name);
@@ -64,14 +69,7 @@ export default function SettingsPage() {
     <div style={{ animation: 'fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both', maxWidth: 800, margin: '0 auto' }}>
       
       {/* Header */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'flex-start', 
-        marginBottom: 'var(--space-8)',
-        paddingBottom: 'var(--space-6)',
-        borderBottom: '1px solid var(--glass-border)'
-      }}>
+      <div className="page-header-mobile">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)' }}>
             <div style={{ padding: 10, background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary-400)', borderRadius: 'var(--radius-lg)' }}>
@@ -87,9 +85,6 @@ export default function SettingsPage() {
               : 'Configure your class details and update your personal information.'}
           </p>
         </div>
-        <button className="btn btn-primary btn-lg" onClick={handleSave} disabled={isSaving} style={{ boxShadow: '0 8px 16px rgba(99, 102, 241, 0.2)' }}>
-          <Save size={18} /> {isSaving ? 'Saving...' : 'Save Changes'}
-        </button>
       </div>
 
       {message && (
@@ -116,7 +111,7 @@ export default function SettingsPage() {
           <h2 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: 'var(--space-4)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 8 }}>
             <UserCircle size={20} className="text-primary-400" /> Personal Information
           </h2>
-          <div className="glass-panel-static" style={{ padding: 'var(--space-6)', display: 'flex', gap: 'var(--space-8)', alignItems: 'center' }}>
+          <div className="glass-panel-static flex-start-mobile-col" style={{ padding: 'var(--space-6)' }}>
             <div style={{
               width: 96, height: 96,
               borderRadius: 'var(--radius-2xl)',
@@ -131,7 +126,7 @@ export default function SettingsPage() {
               {teacher?.name?.charAt(0) || 'T'}
             </div>
             
-            <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-5)' }}>
+            <div className="grid-cols-2" style={{ flex: 1, width: '100%' }}>
               <div style={{ gridColumn: '1 / -1' }}>
                 <label className="label">Full Name</label>
                 <input className="input" value={teacherName} onChange={e => setTeacherName(e.target.value)} style={{ fontSize: '1.0625rem', padding: '12px 16px' }} />
@@ -158,7 +153,7 @@ export default function SettingsPage() {
           <h2 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: 'var(--space-4)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 8 }}>
             <Key size={20} className="text-accent-400" /> Security
           </h2>
-          <div className="glass-panel-static" style={{ padding: 'var(--space-6)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="glass-panel-static flex-between-mobile-col" style={{ padding: 'var(--space-6)', alignItems: 'flex-start' }}>
             <div>
               <div style={{ fontWeight: 600, marginBottom: 4 }}>Password</div>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Update your password to keep your account secure.</div>
@@ -182,7 +177,7 @@ export default function SettingsPage() {
                   No class assigned to you yet. Please contact an admin.
                 </div>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-6)' }}>
+                <div className="grid-cols-2">
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label className="label">Class Name</label>
                     <input className="input" value={className} onChange={e => setClassName(e.target.value)} style={{ fontSize: '1.0625rem', padding: '12px 16px' }} />
@@ -201,7 +196,7 @@ export default function SettingsPage() {
             
             {/* Class Stats */}
             {classInfo && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
+              <div className="grid-cols-3" style={{ marginTop: 'var(--space-4)' }}>
                 <div className="glass-panel-static" style={{ padding: 'var(--space-4)', textAlign: 'center', background: 'rgba(255,255,255,0.02)' }}>
                   <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-300)' }}>{students.length}</div>
                   <div style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Students</div>
@@ -219,6 +214,13 @@ export default function SettingsPage() {
           </section>
         )}
 
+      </div>
+
+      {/* Bottom Save Action */}
+      <div style={{ marginTop: 'var(--space-8)', display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--space-6)', borderTop: '1px solid var(--glass-border)' }}>
+        <button className={`btn ${isDirty ? 'btn-primary' : 'btn-glass'}`} onClick={handleSave} disabled={isSaving || !isDirty} style={{ boxShadow: isDirty ? '0 8px 16px rgba(99, 102, 241, 0.2)' : 'none' }}>
+          <Save size={16} /> {isSaving ? 'Saving...' : 'Save Changes'}
+        </button>
       </div>
     </div>
   );

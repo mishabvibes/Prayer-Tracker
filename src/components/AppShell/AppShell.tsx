@@ -35,15 +35,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  // Parent portal — no sidebar, centered layout
   if (isParentRoute) {
     return (
-      <main style={{
-        minHeight: '100vh',
-        padding: '32px',
-        maxWidth: '900px',
-        margin: '0 auto',
-      }}>
+      <main className="app-parent-content">
         {children}
       </main>
     );
@@ -53,12 +47,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Sidebar />
-      <main style={{
-        marginLeft: 'var(--sidebar-width)',
-        minHeight: '100vh',
-        padding: '32px',
-        transition: 'margin-left 250ms cubic-bezier(0.2, 0, 0, 1)',
-      }}>
+      <main className="app-main-content">
         {children}
       </main>
     </>

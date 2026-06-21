@@ -1,16 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, Suspense, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { LogIn, Eye, EyeOff, ArrowLeft, Mail, Lock, Key } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useApp } from '@/lib/context';
 import styles from './login.module.css';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, loginAsParent, isLoggedIn } = useApp();
-  const [mode, setMode] = useState<'teacher' | 'parent'>('teacher');
+  const [mode, setMode] = useState<'teacher' | 'parent'>(searchParams.get('mode') === 'parent' ? 'parent' : 'teacher');
+
+  useEffect(() => {
+    const qMode = searchParams.get('mode');
+    if (qMode === 'parent' || qMode === 'teacher') {
+      setMode(qMode);
+    }
+  }, [searchParams]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [parentToken, setParentToken] = useState('');
@@ -64,8 +73,10 @@ export default function LoginPage() {
       {/* Left Branding Section */}
       <div className={styles.brandSection} style={{ background: mode === 'parent' ? 'linear-gradient(135deg, var(--success), #059669)' : 'var(--primary-600)' }}>
         <div className={styles.brandHeader}>
-          <span className={styles.brandIcon}>🕌</span>
-          <span className={styles.brandText}>Swala Tracker</span>
+          <span className={styles.brandIcon} style={{ background: 'transparent', padding: 0 }}>
+            <Image src="/images/Logo-white.webp" alt="FajrFlow" width={40} height={40} style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
+          </span>
+          <span className={styles.brandText}>FajrFlow</span>
         </div>
         
         <div className={styles.brandContent}>
@@ -87,8 +98,10 @@ export default function LoginPage() {
           </Link>
 
           <div className={styles.mobileBrand}>
-            <span className={styles.brandIcon} style={{ color: mode === 'parent' ? 'var(--success)' : 'var(--primary-400)' }}>🕌</span>
-            <span className={styles.brandText} style={{ color: 'var(--text-primary)' }}>Swala Tracker</span>
+            <span className={styles.brandIcon} style={{ background: 'transparent', padding: 0 }}>
+              <Image src="/images/Logo-white.webp" alt="FajrFlow" width={32} height={32} style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
+            </span>
+            <span className={styles.brandText} style={{ color: 'var(--text-primary)' }}>FajrFlow</span>
           </div>
 
           <div className={styles.formHeader}>
@@ -176,5 +189,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className={styles.splitPage} style={{ alignItems: 'center', justifyContent: 'center', color: 'var(--text-tertiary)' }}>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

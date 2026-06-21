@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   LayoutDashboard, Users, CalendarDays, ClipboardList,
   BarChart3, Download, Settings, Menu, X, BookOpen, LogOut, Shield, Database
@@ -61,9 +62,11 @@ export default function Sidebar() {
         <div className={styles.sidebarInner}>
           {/* Brand */}
           <div className={styles.brand}>
-            <div className={styles.brandIcon}>🕌</div>
+            <div className={styles.brandIcon} style={{ background: 'transparent', width: 36, height: 36, padding: 0 }}>
+              <Image src="/images/Logo-white.webp" alt="FajrFlow" width={36} height={36} style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
+            </div>
             <div className={styles.brandText}>
-              <span className={styles.brandName}>Swala Tracker</span>
+              <span className={styles.brandName}>FajrFlow</span>
               <span className={styles.brandSub}>جدول السير والسلوك</span>
             </div>
             {/* Close on mobile */}

@@ -55,7 +55,7 @@ export default function ParentPortal() {
   return (
     <div style={{ animation: 'fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-8)' }}>
+      <div className="page-header-mobile">
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-5)' }}>
           <div style={{
             width: 64, height: 64, borderRadius: 'var(--radius-xl)',
@@ -83,7 +83,7 @@ export default function ParentPortal() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)', marginBottom: 'var(--space-8)' }}>
+      <div className="grid-cols-4" style={{ marginBottom: 'var(--space-8)' }}>
         {[
           { label: 'Attendance', value: `${att}%`, color: att >= 80 ? 'var(--success)' : 'var(--warning)', icon: <CheckCircle2 size={20} /> },
           { label: 'Prayer', value: `${prayer}%`, color: 'var(--primary-300)', icon: <span>🕌</span> },
@@ -98,13 +98,13 @@ export default function ParentPortal() {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 'var(--space-6)' }}>
+      <div className="dashboard-grid">
         {/* Left: Prayer + Records */}
         <div>
           {/* Prayer Breakdown */}
           <div className="glass-panel-static animate-in animate-in-delay-2" style={{ padding: 'var(--space-6)', marginBottom: 'var(--space-6)' }}>
             <h3 style={{ fontSize: '1.0625rem', fontWeight: 600, marginBottom: 'var(--space-5)' }}>🕌 Prayer Breakdown</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 'var(--space-3)' }}>
+            <div className="prayer-grid-mobile">
               {FARDH_PRAYERS.map((p, i) => {
                 const total = monthRecords.filter(r => r[p] !== null).length;
                 const done = monthRecords.filter(r => r[p] === 1).length;

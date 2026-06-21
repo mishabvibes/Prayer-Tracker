@@ -83,7 +83,7 @@ export default function ExportPage() {
     
     // Header
     doc.setFontSize(20);
-    doc.text(`Swala Tracker — ${classInfo?.name || 'My Class'}`, 14, 22);
+    doc.text(`FajrFlow — ${classInfo?.name || 'My Class'}`, 14, 22);
     doc.setFontSize(12);
     doc.text(`Monthly Report: ${monthName}`, 14, 30);
     

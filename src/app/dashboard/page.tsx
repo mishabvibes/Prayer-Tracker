@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Users, CalendarDays, CheckCircle2, TrendingUp,
   TrendingDown, Plus, ClipboardList, Activity,
@@ -61,8 +62,10 @@ export default function Dashboard() {
       {/* No Class Assigned */}
       {!hasClass && (
         <div className="glass-panel-static animate-in" style={{ padding: 'var(--space-8)', maxWidth: 600, margin: '80px auto', textAlign: 'center' }}>
-          <div style={{ fontSize: '3.5rem', marginBottom: 'var(--space-5)' }}>🕌</div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: 'var(--space-3)', color: 'var(--text-primary)' }}>Welcome to Swala Tracker!</h2>
+          <div style={{ marginBottom: 'var(--space-5)', display: 'flex', justifyContent: 'center' }}>
+            <Image src="/images/Logo-white.webp" alt="FajrFlow" width={64} height={64} style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
+          </div>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: 'var(--space-3)', color: 'var(--text-primary)' }}>Welcome to FajrFlow!</h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-6)', fontSize: '1.0625rem', lineHeight: 1.6 }}>
             Your teacher account is active, but you have not been assigned to a class yet.
           </p>
@@ -207,7 +210,7 @@ export default function Dashboard() {
           {/* Homework overview */}
           <div className="glass-panel-static animate-in animate-in-delay-5" style={{ padding: 'var(--space-6)', marginTop: 'var(--space-6)' }}>
             <div className={styles.sectionTitle}>📋 Homework Overview</div>
-            <div style={{ display: 'flex', gap: 'var(--space-6)', alignItems: 'center' }}>
+            <div className="flex-start-mobile-col">
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: '2.5rem', fontWeight: 700, lineHeight: 1, marginBottom: 4, color: overallHomework >= 80 ? 'var(--success)' : 'var(--warning)' }}>
                   {overallHomework}%

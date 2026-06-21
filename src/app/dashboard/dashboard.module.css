@@ -325,10 +325,16 @@
   .quickActions {
     grid-template-columns: 1fr;
   }
-  .header {
-    padding-top: var(--space-12);
-  }
   .title {
     font-size: 1.5rem;
+  }
+  .prayerGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .prayerGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

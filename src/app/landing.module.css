@@ -29,10 +29,10 @@
 }
 
 .brandText {
-  font-weight: 700;
-  font-size: 1.25rem;
+  font-weight: 400;
+  font-size: 1.75rem;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  font-family: var(--font-logo);
 }
 
 .navActions {

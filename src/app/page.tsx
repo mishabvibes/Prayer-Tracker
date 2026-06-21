@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useApp } from '@/lib/context';
 import { ArrowRight, BookOpen, HeartPulse, Activity, ShieldCheck, BarChart3, LayoutDashboard } from 'lucide-react';
 import styles from './landing.module.css';
@@ -14,8 +15,10 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className={styles.nav}>
         <div className={styles.brand}>
-          <span className={styles.brandIcon}>🕌</span>
-          <span className={styles.brandText}>Swala Tracker</span>
+          <span className={styles.brandIcon} style={{ background: 'transparent', padding: 0 }}>
+            <Image src="/images/Logo-white.webp" alt="FajrFlow" width={32} height={32} style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
+          </span>
+          <span className={styles.brandText}>FajrFlow</span>
         </div>
         <div className={styles.navActions}>
           {isLoggedIn ? (
@@ -24,7 +27,7 @@ export default function LandingPage() {
             </Link>
           ) : (
             <>
-              <Link href="/login" className={styles.navLink}>Parent Portal</Link>
+              <Link href="/login?mode=parent" className={styles.navLink}>Parent Portal</Link>
               <Link href="/login" className={styles.navBtn}>Teacher Login</Link>
             </>
           )}
@@ -53,7 +56,7 @@ export default function LandingPage() {
                 <Link href="/login" className={styles.primaryBtn}>
                   Get Started <ArrowRight size={18} />
                 </Link>
-                <Link href="/login" className={styles.secondaryBtn}>
+                <Link href="/login?mode=parent" className={styles.secondaryBtn}>
                   Access Parent Portal
                 </Link>
               </>
@@ -108,10 +111,12 @@ export default function LandingPage() {
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div className={styles.brand}>
-            <span className={styles.brandIcon}>🕌</span>
-            <span className={styles.brandText}>Swala Tracker</span>
+            <span className={styles.brandIcon} style={{ background: 'transparent', padding: 0 }}>
+              <Image src="/images/Logo-white.webp" alt="FajrFlow" width={28} height={28} style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
+            </span>
+            <span className={styles.brandText}>FajrFlow</span>
           </div>
-          <p className={styles.copyright}>© {new Date().getFullYear()} Swala Tracker. All rights reserved.</p>
+          <p className={styles.copyright}>© {new Date().getFullYear()} FajrFlow. All rights reserved.</p>
         </div>
       </footer>
     </div>

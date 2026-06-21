@@ -187,12 +187,20 @@
   .profileHeader {
     flex-direction: column;
     text-align: center;
-    padding-top: var(--space-12);
   }
   .statsRow {
     grid-template-columns: 1fr 1fr;
   }
   .profileNameEn {
     font-size: 1.375rem;
+  }
+  .prayerMiniGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .prayerMiniGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

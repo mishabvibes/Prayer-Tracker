@@ -8,6 +8,7 @@ import {
   getAvgBehaviour, getHomeworkRate,
 } from '@/lib/mock-data';
 import { FARDH_PRAYERS, PRAYER_LABELS } from '@/lib/types';
+import styles from './analytics.module.css';
 
 export default function AnalyticsPage() {
   const { students, records, homeworks, selectedMonth, selectedYear, setSelectedMonth, setSelectedYear } = useApp();
@@ -82,7 +83,7 @@ export default function AnalyticsPage() {
   return (
     <div style={{ animation: 'fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-8)', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
+      <div className={styles.header}>
         <div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
             <BarChart3 size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 8 }} />
@@ -92,15 +93,15 @@ export default function AnalyticsPage() {
             Class performance insights and trends
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+        <div className={styles.monthNav}>
           <button className="btn-icon" onClick={() => navigateMonth(-1)}><ChevronLeft size={18} /></button>
-          <span style={{ fontSize: '1rem', fontWeight: 600, minWidth: 160, textAlign: 'center' }}>{monthName}</span>
+          <span style={{ fontSize: '1rem', fontWeight: 600, minWidth: '120px', textAlign: 'center' }}>{monthName}</span>
           <button className="btn-icon" onClick={() => navigateMonth(1)}><ChevronRight size={18} /></button>
         </div>
       </div>
 
       {/* Class Averages */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)', marginBottom: 'var(--space-8)' }}>
+      <div className={styles.statsGrid}>
         {[
           { label: 'Attendance', value: `${classAvg.attendance}%`, color: colorForPercent(classAvg.attendance), icon: '📊' },
           { label: 'Prayer', value: `${classAvg.prayer}%`, color: 'var(--primary-300)', icon: '🕌' },
@@ -116,7 +117,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Two Column Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 'var(--space-6)' }}>
+      <div className={styles.mainGrid}>
         {/* Left: Student comparison */}
         <div>
           {/* Prayer Distribution */}
@@ -147,8 +148,8 @@ export default function AnalyticsPage() {
             <div style={{ padding: 'var(--space-5) var(--space-6)' }}>
               <h3 style={{ fontSize: '1.0625rem', fontWeight: 600 }}>📋 Student Rankings</h3>
             </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
+            <div className={styles.tableContainer}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem', minWidth: '600px' }}>
                 <thead>
                   <tr>
                     {['#', 'Student', 'Attendance', 'Prayer', 'Behaviour', 'Homework'].map(h => (

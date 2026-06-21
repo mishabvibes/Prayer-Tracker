@@ -6,6 +6,7 @@ import { useApp } from '@/lib/context';
 import { FARDH_PRAYERS, RAWATIB_PRAYERS, JAMAA_PRAYERS, PRAYER_LABELS } from '@/lib/types';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import styles from './export.module.css';
 
 export default function ExportPage() {
   const { students, records, classInfo, selectedMonth, selectedYear } = useApp();
@@ -147,14 +148,7 @@ export default function ExportPage() {
     <div style={{ animation: 'fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both', maxWidth: 1000, margin: '0 auto' }}>
       
       {/* Header */}
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 'var(--space-4)', 
-        marginBottom: 'var(--space-8)',
-        paddingBottom: 'var(--space-6)',
-        borderBottom: '1px solid var(--glass-border)'
-      }}>
+      <div className={styles.header}>
         <div style={{ padding: 14, background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary-400)', borderRadius: 'var(--radius-lg)' }}>
           <Download size={28} />
         </div>
@@ -166,7 +160,7 @@ export default function ExportPage() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: 'var(--space-8)' }}>
+      <div className={styles.mainGrid}>
         
         {/* Left Column: Configuration */}
         <div>

@@ -5,7 +5,7 @@ import { Download, FileSpreadsheet, FileText, Calendar, Users, Printer, ChevronR
 import { useApp } from '@/lib/context';
 import { FARDH_PRAYERS, RAWATIB_PRAYERS, JAMAA_PRAYERS, PRAYER_LABELS } from '@/lib/types';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import styles from './export.module.css';
 
 export default function ExportPage() {
@@ -119,7 +119,7 @@ export default function ExportPage() {
       ];
     });
 
-    (doc as any).autoTable({
+    autoTable(doc, {
       startY: 55,
       head: [['Student Name', 'Arabic', 'Days Present', 'Prayer Rate', 'Avg Behaviour']],
       body: tableData,

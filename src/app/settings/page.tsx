@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Settings, MapPin, BookOpen, UserCircle, Shield, Save, Key, Mail } from 'lucide-react';
 import { useApp } from '@/lib/context';
 import { createClient } from '@/lib/supabase/client';
+import Link from 'next/link';
 
 export default function SettingsPage() {
   const supabase = createClient();
@@ -14,6 +15,9 @@ export default function SettingsPage() {
   const [teacherName, setTeacherName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
+
+  const [newPassword, setNewPassword] = useState('');
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   const isAdmin = teacher?.role === 'admin';
 
@@ -62,6 +66,30 @@ export default function SettingsPage() {
       setMessage('Error saving: ' + err.message);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (!newPassword || newPassword.length < 6) {
+      setMessage('Error: Password must be at least 6 characters.');
+      return;
+    }
+    setIsUpdatingPassword(true);
+    setMessage('');
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+      
+      setMessage('Password updated successfully!');
+      setNewPassword('');
+    } catch (err: any) {
+      setMessage('Error updating password: ' + err.message);
+    } finally {
+      setIsUpdatingPassword(false);
     }
   };
 
@@ -148,21 +176,53 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* Security / Password placeholder */}
+        {/* Security / Password */}
         <section>
           <h2 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: 'var(--space-4)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 8 }}>
             <Key size={20} className="text-accent-400" /> Security
           </h2>
-          <div className="glass-panel-static flex-between-mobile-col" style={{ padding: 'var(--space-6)', alignItems: 'flex-start' }}>
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: 4 }}>Password</div>
+          <div className="glass-panel-static flex-between-mobile-col" style={{ padding: 'var(--space-6)', alignItems: 'center' }}>
+            <div style={{ flex: 1, paddingRight: 'var(--space-4)' }}>
+              <div style={{ fontWeight: 600, marginBottom: 4 }}>Change Password</div>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Update your password to keep your account secure.</div>
             </div>
-            <button className="btn btn-glass" onClick={() => alert('Password reset emails will be sent via Supabase Auth. Coming soon.')}>
-              Request Password Reset
-            </button>
+            <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', marginTop: 'var(--space-3)' }}>
+              <input 
+                type="password" 
+                className="input" 
+                placeholder="Enter new password" 
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                style={{ minWidth: '220px' }}
+              />
+              <button 
+                className="btn btn-primary" 
+                onClick={handleUpdatePassword} 
+                disabled={isUpdatingPassword || !newPassword}
+              >
+                {isUpdatingPassword ? 'Updating...' : 'Update Password'}
+              </button>
+            </div>
           </div>
         </section>
+
+        {/* Admin Management Link */}
+        {isAdmin && (
+          <section className="animate-in animate-in-delay-1">
+            <h2 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: 'var(--space-4)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Shield size={20} className="text-primary-400" /> System Management
+            </h2>
+            <div className="glass-panel-static flex-between-mobile-col" style={{ padding: 'var(--space-6)', alignItems: 'center', background: 'linear-gradient(to right, rgba(99, 102, 241, 0.05), rgba(255, 255, 255, 0.02))', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+              <div>
+                <div style={{ fontWeight: 600, marginBottom: 4 }}>Manage Teachers & Classes</div>
+                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>You can create new teachers, manage classes, and assign roles from the dedicated Admin Portal.</div>
+              </div>
+              <Link href="/admin/manage" style={{ marginTop: '1rem', display: 'inline-block' }}>
+                <button className="btn btn-primary" style={{ boxShadow: '0 8px 16px rgba(99, 102, 241, 0.2)' }}>Go to Admin Portal</button>
+              </Link>
+            </div>
+          </section>
+        )}
 
         {/* Class Information (ONLY FOR TEACHERS) */}
         {!isAdmin && (

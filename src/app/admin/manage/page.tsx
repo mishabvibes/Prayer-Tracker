@@ -206,7 +206,7 @@ export default function AdminPage() {
   if (!teacher || teacher.role !== 'admin') return null;
 
   return (
-    <div style={{ animation: 'fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both' }}>
+    <div>
       <div style={{ marginBottom: 'var(--space-8)' }}>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
           <Shield size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 8, color: 'var(--primary-400)' }} />

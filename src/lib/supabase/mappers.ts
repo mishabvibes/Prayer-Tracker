@@ -102,8 +102,7 @@ export function mapNote(row: any): StudentNote {
 // ─── App → Row Mappers (for inserts/updates) ────────────────────
 
 export function toRecordRow(r: DailyRecord) {
-  return {
-    id: r.id,
+  const row: any = {
     student_id: r.studentId,
     date: r.date,
     fajr: r.fajr,
@@ -125,4 +124,10 @@ export function toRecordRow(r: DailyRecord) {
     notes: r.notes,
     recorded_by: r.recordedBy || null,
   };
+
+  if (r.id && !r.id.startsWith('rec-')) {
+    row.id = r.id;
+  }
+
+  return row;
 }

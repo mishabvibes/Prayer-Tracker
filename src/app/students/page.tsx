@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, Plus, UserCircle, Eye, Trash2 } from 'lucide-react';
+import { Search, Plus, UserCircle, Eye, Trash2, Key, Copy, Share2 } from 'lucide-react';
 import { useApp } from '@/lib/context';
 import { getAttendanceRate, getPrayerCompletionRate, getAvgBehaviour } from '@/lib/mock-data';
 import styles from './students.module.css';
@@ -45,6 +45,26 @@ export default function StudentsPage() {
     setNewNameEn('');
     setNewNameAr('');
     setShowAdd(false);
+  };
+
+  const handleCopy = (token: string) => {
+    navigator.clipboard.writeText(token);
+    alert('Token copied to clipboard!');
+  };
+
+  const handleShare = (student: any) => {
+    const loginUrl = `${window.location.origin}/login?mode=parent`;
+    const text = `Asslaamu Alaikum! Access ${student.nameEn}'s Swala Tracker portal here: ${loginUrl}\nYour Access Token: ${student.parentToken}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'Swala Tracker Parent Access',
+        text: text,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(text);
+      alert('Login details copied to clipboard! You can paste them to the parents.');
+    }
   };
 
   return (
@@ -168,6 +188,20 @@ export default function StudentsPage() {
                     {beh}
                   </div>
                   <div className={styles.miniStatLabel}>Behaviour</div>
+                </div>
+              </div>
+              <div style={{ marginTop: 'var(--space-4)', padding: 'var(--space-3)', background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                  <Key size={14} style={{ color: 'var(--primary-400)' }} />
+                  <span style={{ fontFamily: 'monospace', color: 'var(--text-primary)' }} title="Parent Access Token">{student.parentToken}</span>
+                </div>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  <button className="btn-icon" title="Copy Token" onClick={(e) => { e.stopPropagation(); handleCopy(student.parentToken); }}>
+                    <Copy size={14} />
+                  </button>
+                  <button className="btn-icon" title="Share Login Details" onClick={(e) => { e.stopPropagation(); handleShare(student); }}>
+                    <Share2 size={14} />
+                  </button>
                 </div>
               </div>
             </div>

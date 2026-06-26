@@ -87,6 +87,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setIsLoggedIn(true);
         setLoginRole('parent');
         setParentStudentId(studentId);
+        
+        // Load parent data on refresh
+        const { data: studentRow } = await supabase.from('students').select('*').eq('id', studentId).single();
+        if (studentRow) {
+          const [recordsRes, homeworkRes, notesRes, assignmentsRes] = await Promise.all([
+            supabase.from('daily_records').select('*').eq('student_id', studentId),
+            supabase.from('homework').select('*').eq('student_id', studentId),
+            supabase.from('student_notes').select('*').eq('student_id', studentId).order('created_at', { ascending: false }),
+            supabase.from('assignments').select('*').eq('class_id', studentRow.class_id),
+          ]);
+          setStudents([mapStudent(studentRow)]);
+          setRecords((recordsRes.data || []).map(mapRecord));
+          setHomeworks((homeworkRes.data || []).map(mapHomework));
+          setNotes((notesRes.data || []).map(mapNote));
+          setAssignments((assignmentsRes.data || []).map(mapAssignment));
+        }
+
         setAuthLoading(false);
         return;
       }

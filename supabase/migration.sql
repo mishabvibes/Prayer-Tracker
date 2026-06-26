@@ -214,3 +214,52 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_new_user();
+
+-- ═══════════════════════════════════════════════════════════════
+--  PARENT PORTAL PUBLIC ACCESS POLICIES
+-- ═══════════════════════════════════════════════════════════════
+
+-- Allow parents to verify their token by reading the students table
+CREATE POLICY "Parents can view student by token" ON students FOR SELECT TO anon, authenticated USING (true);
+
+-- Allow parents to read their child's records
+CREATE POLICY "Parents can view records" ON daily_records FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "Parents can view homework" ON homework FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "Parents can view notes" ON student_notes FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "Parents can view assignments" ON assignments FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "Parents can view classes" ON classes FOR SELECT TO anon, authenticated USING (true);
+
+-- ═══════════════════════════════════════════════════════════════
+--  ADMIN RLS POLICIES
+-- ═══════════════════════════════════════════════════════════════
+
+-- Create a security definer function to avoid infinite recursion
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM teachers WHERE auth_id = auth.uid() AND role = 'admin'
+  );
+$$;
+
+-- Allow admins to see all teachers
+CREATE POLICY "Admins can view all teachers"
+  ON teachers FOR SELECT
+  USING ( public.is_admin() );
+
+-- Allow admins to update any teacher
+CREATE POLICY "Admins can update all teachers"
+  ON teachers FOR UPDATE
+  USING ( public.is_admin() );
+
+-- Admin Full Access Policies
+CREATE POLICY "Admins have full access to classes" ON classes FOR ALL USING ( public.is_admin() );
+CREATE POLICY "Admins have full access to students" ON students FOR ALL USING ( public.is_admin() );
+CREATE POLICY "Admins have full access to daily_records" ON daily_records FOR ALL USING ( public.is_admin() );
+CREATE POLICY "Admins have full access to assignments" ON assignments FOR ALL USING ( public.is_admin() );
+CREATE POLICY "Admins have full access to homework" ON homework FOR ALL USING ( public.is_admin() );
+CREATE POLICY "Admins have full access to student_notes" ON student_notes FOR ALL USING ( public.is_admin() );
+
+

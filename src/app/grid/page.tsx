@@ -12,7 +12,7 @@ import styles from './grid.module.css';
 const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function GridPage() {
-  const { students, records, selectedMonth, selectedYear, setSelectedMonth, setSelectedYear, updateRecord } = useApp();
+  const { students, records, selectedMonth, selectedYear, setSelectedMonth, setSelectedYear, updateRecord, teacher } = useApp();
 
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
@@ -56,7 +56,7 @@ export default function GridPage() {
       fajr: null, dhuhr: null, asr: null, maghrib: null, isha: null,
       rawatibFajr: null, rawatibDhuhr: null, rawatibAsr: null, rawatibMaghrib: null,
       jamaaFajr: null, jamaaDhuhr: null, jamaaAsr: null, jamaaMaghrib: null, jamaaIsha: null,
-      attendance: null, behaviourScore: null, notes: '', recordedBy: 'teacher-001',
+      attendance: null, behaviourScore: null, notes: '', recordedBy: teacher?.id || '',
       [field]: next,
     };
 
@@ -72,7 +72,7 @@ export default function GridPage() {
       fajr: null, dhuhr: null, asr: null, maghrib: null, isha: null,
       rawatibFajr: null, rawatibDhuhr: null, rawatibAsr: null, rawatibMaghrib: null,
       jamaaFajr: null, jamaaDhuhr: null, jamaaAsr: null, jamaaMaghrib: null, jamaaIsha: null,
-      attendance: status, behaviourScore: null, notes: '', recordedBy: 'teacher-001',
+      attendance: status, behaviourScore: null, notes: '', recordedBy: teacher?.id || '',
     };
     updateRecord(record);
   }, [getRecord, dateStr, updateRecord]);
@@ -86,7 +86,7 @@ export default function GridPage() {
       fajr: null, dhuhr: null, asr: null, maghrib: null, isha: null,
       rawatibFajr: null, rawatibDhuhr: null, rawatibAsr: null, rawatibMaghrib: null,
       jamaaFajr: null, jamaaDhuhr: null, jamaaAsr: null, jamaaMaghrib: null, jamaaIsha: null,
-      attendance: null, behaviourScore: score, notes: '', recordedBy: 'teacher-001',
+      attendance: null, behaviourScore: score, notes: '', recordedBy: teacher?.id || '',
     };
     updateRecord(record);
   }, [getRecord, dateStr, updateRecord]);
@@ -107,7 +107,7 @@ export default function GridPage() {
     const cellClass = value === 1 ? styles.cellPerformed : value === 0 ? styles.cellMissed : styles.cellNull;
 
     return (
-      <td className={styles.prayerCell}>
+      <td key={field} className={styles.prayerCell}>
         <button
           className={`${styles.cellToggle} ${cellClass}`}
           onClick={() => togglePrayer(studentId, field)}

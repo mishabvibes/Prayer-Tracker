@@ -3,7 +3,10 @@
 import React, { useState } from 'react';
 import { Download, FileSpreadsheet, FileText, Calendar, Users, Printer, ChevronRight } from 'lucide-react';
 import { useApp } from '@/lib/context';
-import { FARDH_PRAYERS, RAWATIB_PRAYERS, JAMAA_PRAYERS, PRAYER_LABELS } from '@/lib/types';
+import {
+  GRID_DAILY, GRID_CONGREGATION, GRID_RAWATIB,
+  GRID_ADHKAR, GRID_LESSONS, PRAYER_LABELS,
+} from '@/lib/types';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import styles from './export.module.css';
@@ -36,10 +39,12 @@ export default function ExportPage() {
     // Build CSV headers
     const headers = [
       'Date', 'Student', 'Student (Arabic)',
-      ...FARDH_PRAYERS.map(p => `Fardh: ${PRAYER_LABELS[p]}`),
-      ...RAWATIB_PRAYERS.map(p => `Rawatib: ${PRAYER_LABELS[p]}`),
-      ...JAMAA_PRAYERS.map(p => `Jamaa: ${PRAYER_LABELS[p]}`),
-      'Attendance', 'Behaviour Score', 'Notes'
+      ...GRID_DAILY.map(p => `Daily: ${PRAYER_LABELS[p]}`),
+      ...GRID_CONGREGATION.map(p => `Congregation: ${PRAYER_LABELS[p]}`),
+      ...GRID_RAWATIB.map(p => `Rawatib: ${PRAYER_LABELS[p]}`),
+      ...GRID_ADHKAR.map(p => `Adhkar: ${PRAYER_LABELS[p]}`),
+      ...GRID_LESSONS.map(p => `Lessons: ${PRAYER_LABELS[p]}`),
+      'Notes'
     ];
 
     csvContent += headers.join(',') + '\n';
@@ -52,11 +57,11 @@ export default function ExportPage() {
         record.date,
         `"${student.nameEn}"`,
         `"${student.nameAr}"`,
-        ...FARDH_PRAYERS.map(p => record[p] === null ? '' : record[p]),
-        ...RAWATIB_PRAYERS.map(p => record[p] === null ? '' : record[p]),
-        ...JAMAA_PRAYERS.map(p => record[p] === null ? '' : record[p]),
-        record.attendance || '',
-        record.behaviourScore || '',
+        ...GRID_DAILY.map(p => record[p] === null ? '' : record[p]),
+        ...GRID_CONGREGATION.map(p => record[p] === null ? '' : record[p]),
+        ...GRID_RAWATIB.map(p => record[p] === null ? '' : record[p]),
+        ...GRID_ADHKAR.map(p => record[p] === null ? '' : record[p]),
+        ...GRID_LESSONS.map(p => record[p] === null ? '' : record[p]),
         `"${record.notes || ''}"`,
       ];
 
@@ -102,26 +107,22 @@ export default function ExportPage() {
     // Table
     const tableData = students.map(student => {
       const sRecords = monthRecords.filter(r => r.studentId === student.id);
-      const present = sRecords.filter(r => r.attendance === 'present').length;
-      const totalFardh = sRecords.filter(r => r.fajr !== null).length * 5;
-      const doneFardh = sRecords.reduce((sum, r) => sum + (r.fajr||0) + (r.dhuhr||0) + (r.asr||0) + (r.maghrib||0) + (r.isha||0), 0);
+      const totalCongregation = sRecords.filter(r => r.jamaaFajr !== null).length * 5;
+      const doneCongregation = sRecords.reduce((sum, r) => sum + (r.jamaaFajr||0) + (r.jamaaDhuhr||0) + (r.jamaaAsr||0) + (r.jamaaMaghrib||0) + (r.jamaaIsha||0), 0);
       
-      const prayRate = totalFardh ? Math.round((doneFardh/totalFardh)*100) : 0;
-      const behScores = sRecords.filter(r => r.behaviourScore).map(r => r.behaviourScore as number);
-      const avgBeh = behScores.length ? (behScores.reduce((a,b)=>a+b,0)/behScores.length).toFixed(1) : '-';
+      const prayRate = totalCongregation ? Math.round((doneCongregation/totalCongregation)*100) : 0;
 
       return [
         student.nameEn,
         student.nameAr,
-        present.toString(),
+        sRecords.length.toString(),
         `${prayRate}%`,
-        avgBeh
       ];
     });
 
     autoTable(doc, {
       startY: 55,
-      head: [['Student Name', 'Arabic', 'Days Present', 'Prayer Rate', 'Avg Behaviour']],
+      head: [['Student Name', 'Arabic', 'Days Tracked', 'Congregation Rate']],
       body: tableData,
       theme: 'grid',
       headStyles: { fillColor: [99, 102, 241] },

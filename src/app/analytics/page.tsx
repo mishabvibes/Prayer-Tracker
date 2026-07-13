@@ -7,7 +7,7 @@ import {
   getAttendanceRate, getPrayerCompletionRate,
   getAvgBehaviour, getHomeworkRate,
 } from '@/lib/mock-data';
-import { FARDH_PRAYERS, PRAYER_LABELS } from '@/lib/types';
+import { GRID_CONGREGATION, PRAYER_LABELS } from '@/lib/types';
 import styles from './analytics.module.css';
 
 export default function AnalyticsPage() {
@@ -48,7 +48,7 @@ export default function AnalyticsPage() {
 
   // Prayer breakdown for class
   const prayerBreakdown = useMemo(() => {
-    return FARDH_PRAYERS.map(p => {
+    return GRID_CONGREGATION.map(p => {
       const total = monthRecords.filter(r => r[p] !== null).length;
       const done = monthRecords.filter(r => r[p] === 1).length;
       return { key: p, name: PRAYER_LABELS[p], percent: total === 0 ? 0 : Math.round((done / total) * 100) };

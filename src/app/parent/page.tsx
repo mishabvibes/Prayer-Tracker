@@ -1,13 +1,22 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { LogOut, Calendar, CheckCircle2, Activity, BookOpen } from 'lucide-react';
+import { LogOut, Calendar, BookOpen } from 'lucide-react';
 import { useApp } from '@/lib/context';
+import { getPrayerCompletionRate, getHomeworkRate } from '@/lib/mock-data';
 import {
-  getAttendanceRate, getPrayerCompletionRate,
-  getAvgBehaviour, getHomeworkRate,
-} from '@/lib/mock-data';
-import { FARDH_PRAYERS, PRAYER_LABELS } from '@/lib/types';
+  GRID_DAILY, GRID_CONGREGATION, GRID_RAWATIB,
+  GRID_ADHKAR, GRID_LESSONS, PRAYER_LABELS,
+} from '@/lib/types';
+
+// Group config matching the grid page
+const CHECKLIST_GROUPS = [
+  { label: 'Daily', fields: GRID_DAILY, color: '#fbbf24' },
+  { label: 'Congregation', fields: GRID_CONGREGATION, color: 'var(--primary-400)' },
+  { label: 'Sunnah Rawatib', fields: GRID_RAWATIB, color: 'var(--accent-400)' },
+  { label: 'Adhkar & Ibadah', fields: GRID_ADHKAR, color: '#a78bfa' },
+  { label: 'Lessons & Other', fields: GRID_LESSONS, color: '#38bdf8' },
+] as const;
 
 export default function ParentPortal() {
   const {
@@ -34,13 +43,49 @@ export default function ParentPortal() {
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [notes, parentStudentId]);
 
-  const att = useMemo(() => getAttendanceRate(monthRecords), [monthRecords]);
   const prayer = useMemo(() => getPrayerCompletionRate(monthRecords), [monthRecords]);
-  const beh = useMemo(() => getAvgBehaviour(monthRecords), [monthRecords]);
   const hw = useMemo(() => getHomeworkRate(studentHomeworks), [studentHomeworks]);
 
+  // Per-group completion rates
+  const groupStats = useMemo(() => {
+    return CHECKLIST_GROUPS.map(group => {
+      let total = 0;
+      let done = 0;
+      for (const r of monthRecords) {
+        for (const f of group.fields) {
+          const val = r[f as keyof typeof r] as number | null;
+          if (val !== null) {
+            total++;
+            if (val === 1) done++;
+          }
+        }
+      }
+      return {
+        ...group,
+        percent: total === 0 ? 0 : Math.round((done / total) * 100),
+      };
+    });
+  }, [monthRecords]);
+
+  // Overall completion across all 25 columns
+  const overallCompletion = useMemo(() => {
+    let total = 0;
+    let done = 0;
+    for (const group of CHECKLIST_GROUPS) {
+      for (const r of monthRecords) {
+        for (const f of group.fields) {
+          const val = r[f as keyof typeof r] as number | null;
+          if (val !== null) {
+            total++;
+            if (val === 1) done++;
+          }
+        }
+      }
+    }
+    return total === 0 ? 0 : Math.round((done / total) * 100);
+  }, [monthRecords]);
+
   const monthName = new Date(selectedYear, selectedMonth).toLocaleString('en', { month: 'long', year: 'numeric' });
-  const prayerColors = ['var(--prayer-fajr)', 'var(--prayer-dhuhr)', 'var(--prayer-asr)', 'var(--prayer-maghrib)', 'var(--prayer-isha)'];
 
   if (!student) {
     return (
@@ -82,16 +127,16 @@ export default function ParentPortal() {
         <span className="badge badge-primary">{monthName}</span>
       </div>
 
-      {/* Stats */}
+      {/* Top Stats */}
       <div className="grid-cols-4" style={{ marginBottom: 'var(--space-8)' }}>
         {[
-          { label: 'Attendance', value: `${att}%`, color: att >= 80 ? 'var(--success)' : 'var(--warning)', icon: <CheckCircle2 size={20} /> },
-          { label: 'Prayer', value: `${prayer}%`, color: 'var(--primary-300)', icon: <span>🕌</span> },
-          { label: 'Behaviour', value: `${beh}/5`, color: beh >= 4 ? 'var(--success)' : 'var(--warning)', icon: <Activity size={20} /> },
-          { label: 'Homework', value: `${hw}%`, color: hw >= 80 ? 'var(--success)' : 'var(--warning)', icon: <BookOpen size={20} /> },
+          { label: 'Overall', value: `${overallCompletion}%`, color: overallCompletion >= 70 ? 'var(--success)' : 'var(--warning)', icon: '📊' },
+          { label: 'Congregation', value: `${prayer}%`, color: 'var(--primary-300)', icon: '🕌' },
+          { label: 'Homework', value: `${hw}%`, color: hw >= 80 ? 'var(--success)' : 'var(--warning)', icon: '📋' },
+          { label: 'Days Tracked', value: `${monthRecords.length}`, color: 'var(--info)', icon: '📅' },
         ].map((s, i) => (
           <div key={s.label} className="glass-panel-static animate-in" style={{ padding: 'var(--space-5)', textAlign: 'center', animationDelay: `${i * 0.05}s` }}>
-            <div style={{ marginBottom: 'var(--space-2)', color: 'var(--text-tertiary)' }}>{s.icon}</div>
+            <div style={{ marginBottom: 'var(--space-2)', fontSize: '1.25rem' }}>{s.icon}</div>
             <div style={{ fontSize: '1.75rem', fontWeight: 700, color: s.color, lineHeight: 1 }}>{s.value}</div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{s.label}</div>
           </div>
@@ -99,22 +144,46 @@ export default function ParentPortal() {
       </div>
 
       <div className="dashboard-grid">
-        {/* Left: Prayer + Records */}
+        {/* Left: Checklist Group Breakdown + Records */}
         <div>
-          {/* Prayer Breakdown */}
+          {/* Group Completion Breakdown */}
           <div className="glass-panel-static animate-in animate-in-delay-2" style={{ padding: 'var(--space-6)', marginBottom: 'var(--space-6)' }}>
-            <h3 style={{ fontSize: '1.0625rem', fontWeight: 600, marginBottom: 'var(--space-5)' }}>🕌 Prayer Breakdown</h3>
+            <h3 style={{ fontSize: '1.0625rem', fontWeight: 600, marginBottom: 'var(--space-5)' }}>📋 Checklist Overview</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+              {groupStats.map(g => (
+                <div key={g.label}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: '0.8125rem' }}>
+                    <span style={{ fontWeight: 500 }}>{g.label}</span>
+                    <span style={{ color: g.color, fontWeight: 600 }}>{g.percent}%</span>
+                  </div>
+                  <div style={{ height: 8, borderRadius: 4, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%', width: `${Math.max(g.percent, 2)}%`,
+                      background: g.color,
+                      borderRadius: 4,
+                      transition: 'width 0.8s cubic-bezier(0.2, 0, 0, 1)',
+                    }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Congregation Prayer Breakdown */}
+          <div className="glass-panel-static animate-in animate-in-delay-3" style={{ padding: 'var(--space-6)', marginBottom: 'var(--space-6)' }}>
+            <h3 style={{ fontSize: '1.0625rem', fontWeight: 600, marginBottom: 'var(--space-5)' }}>🕌 Congregation Prayers</h3>
             <div className="prayer-grid-mobile">
-              {FARDH_PRAYERS.map((p, i) => {
+              {GRID_CONGREGATION.map((p, i) => {
                 const total = monthRecords.filter(r => r[p] !== null).length;
                 const done = monthRecords.filter(r => r[p] === 1).length;
                 const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+                const colors = ['var(--prayer-fajr)', 'var(--prayer-dhuhr)', 'var(--prayer-asr)', 'var(--prayer-maghrib)', 'var(--prayer-isha)'];
                 return (
                   <div key={p} style={{ textAlign: 'center', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.03)' }}>
                     <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{PRAYER_LABELS[p]}</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: prayerColors[i] }}>{pct}%</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: colors[i] }}>{pct}%</div>
                     <div style={{ marginTop: 6, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${pct}%`, background: prayerColors[i], borderRadius: 2 }} />
+                      <div style={{ height: '100%', width: `${pct}%`, background: colors[i], borderRadius: 2 }} />
                     </div>
                   </div>
                 );
@@ -122,37 +191,39 @@ export default function ParentPortal() {
             </div>
           </div>
 
-          {/* Recent Records */}
-          <div className="glass-panel-static animate-in animate-in-delay-3" style={{ padding: 'var(--space-6)' }}>
+          {/* Recent Records — all 25 columns in a scrollable table */}
+          <div className="glass-panel-static animate-in animate-in-delay-4" style={{ padding: 'var(--space-6)' }}>
             <h3 style={{ fontSize: '1.0625rem', fontWeight: 600, marginBottom: 'var(--space-4)' }}>📅 Recent Records</h3>
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem', minWidth: 900 }}>
                 <thead>
                   <tr>
-                    {['Date', 'Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', 'Status', 'Score'].map(h => (
-                      <th key={h} style={{ padding: '8px', textAlign: 'center', color: 'var(--text-tertiary)', fontWeight: 500, borderBottom: '1px solid var(--glass-border)', fontSize: '0.6875rem', textTransform: 'uppercase' }}>{h}</th>
-                    ))}
+                    <th style={{ padding: '6px 8px', textAlign: 'left', color: 'var(--text-tertiary)', fontWeight: 500, borderBottom: '1px solid var(--glass-border)', fontSize: '0.625rem', textTransform: 'uppercase', position: 'sticky', left: 0, background: 'rgba(10,10,30,0.95)', zIndex: 1 }}>Date</th>
+                    {CHECKLIST_GROUPS.map(group =>
+                      group.fields.map(f => (
+                        <th key={f} style={{ padding: '6px 4px', textAlign: 'center', color: group.color, fontWeight: 500, borderBottom: '1px solid var(--glass-border)', fontSize: '0.5625rem', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                          {PRAYER_LABELS[f]}
+                        </th>
+                      ))
+                    )}
                   </tr>
                 </thead>
                 <tbody>
                   {monthRecords.slice(-15).reverse().map(r => (
                     <tr key={r.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <td style={{ padding: '8px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                      <td style={{ padding: '6px 8px', color: 'var(--text-secondary)', whiteSpace: 'nowrap', position: 'sticky', left: 0, background: 'rgba(10,10,30,0.95)', zIndex: 1 }}>
                         {new Date(r.date).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
                       </td>
-                      {[r.fajr, r.dhuhr, r.asr, r.maghrib, r.isha].map((v, i) => (
-                        <td key={i} style={{ padding: '8px', textAlign: 'center' }}>
-                          {v === 1 ? '✅' : v === 0 ? '❌' : '—'}
-                        </td>
-                      ))}
-                      <td style={{ padding: '8px', textAlign: 'center' }}>
-                        <span className={`badge ${r.attendance === 'present' ? 'badge-success' : r.attendance === 'late' ? 'badge-warning' : 'badge-danger'}`}>
-                          {r.attendance || '—'}
-                        </span>
-                      </td>
-                      <td style={{ padding: '8px', textAlign: 'center', color: 'var(--accent-400)' }}>
-                        {r.behaviourScore ? `${r.behaviourScore}/5` : '—'}
-                      </td>
+                      {CHECKLIST_GROUPS.map(group =>
+                        group.fields.map(f => {
+                          const val = r[f as keyof typeof r] as number | null;
+                          return (
+                            <td key={f} style={{ padding: '6px 4px', textAlign: 'center' }}>
+                              {val === 1 ? '✅' : val === 0 ? '❌' : '·'}
+                            </td>
+                          );
+                        })
+                      )}
                     </tr>
                   ))}
                 </tbody>

@@ -9,7 +9,7 @@ import {
   getAttendanceRate, getPrayerCompletionRate,
   getAvgBehaviour, getHomeworkRate,
 } from '@/lib/mock-data';
-import { FARDH_PRAYERS, PRAYER_LABELS, NoteTag } from '@/lib/types';
+import { GRID_CONGREGATION, PRAYER_LABELS, NoteTag } from '@/lib/types';
 import styles from './profile.module.css';
 
 const NOTE_TAG_COLORS: Record<NoteTag, string> = {
@@ -51,7 +51,7 @@ export default function StudentProfilePage() {
   const hw = useMemo(() => getHomeworkRate(studentHomeworks), [studentHomeworks]);
 
   const prayerBreakdown = useMemo(() => {
-    return FARDH_PRAYERS.map(p => {
+    return GRID_CONGREGATION.map(p => {
       const total = monthRecords.filter(r => r[p] !== null).length;
       const done = monthRecords.filter(r => r[p] === 1).length;
       return {
@@ -167,7 +167,6 @@ export default function StudentProfilePage() {
                     <th style={{ padding: '8px', textAlign: 'center', color: 'var(--text-tertiary)', fontWeight: 500, borderBottom: '1px solid var(--glass-border)' }}>Asr</th>
                     <th style={{ padding: '8px', textAlign: 'center', color: 'var(--text-tertiary)', fontWeight: 500, borderBottom: '1px solid var(--glass-border)' }}>Magh</th>
                     <th style={{ padding: '8px', textAlign: 'center', color: 'var(--text-tertiary)', fontWeight: 500, borderBottom: '1px solid var(--glass-border)' }}>Isha</th>
-                    <th style={{ padding: '8px', textAlign: 'center', color: 'var(--text-tertiary)', fontWeight: 500, borderBottom: '1px solid var(--glass-border)' }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -176,19 +175,11 @@ export default function StudentProfilePage() {
                       <td style={{ padding: '8px 12px', color: 'var(--text-secondary)' }}>
                         {new Date(r.date).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
                       </td>
-                      {[r.fajr, r.dhuhr, r.asr, r.maghrib, r.isha].map((v, i) => (
+                      {[r.jamaaFajr, r.jamaaDhuhr, r.jamaaAsr, r.jamaaMaghrib, r.jamaaIsha].map((v, i) => (
                         <td key={i} style={{ padding: '8px', textAlign: 'center' }}>
                           {v === 1 ? '✅' : v === 0 ? '❌' : '—'}
                         </td>
                       ))}
-                      <td style={{ padding: '8px', textAlign: 'center' }}>
-                        <span className={`badge ${
-                          r.attendance === 'present' ? 'badge-success' :
-                          r.attendance === 'late' ? 'badge-warning' : 'badge-danger'
-                        }`}>
-                          {r.attendance}
-                        </span>
-                      </td>
                     </tr>
                   ))}
                 </tbody>

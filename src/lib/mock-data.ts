@@ -231,7 +231,7 @@ export function getPrayerCompletionRate(records: DailyRecord[]): number {
   let total = 0;
   let performed = 0;
   for (const r of records) {
-    const prayers = [r.fajr, r.dhuhr, r.asr, r.maghrib, r.isha];
+    const prayers = [r.jamaaFajr, r.jamaaDhuhr, r.jamaaAsr, r.jamaaMaghrib, r.jamaaIsha];
     for (const p of prayers) {
       if (p !== null) {
         total++;

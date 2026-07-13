@@ -13,7 +13,7 @@ import {
   getAttendanceRate, getPrayerCompletionRate,
   getAvgBehaviour, getHomeworkRate,
 } from '@/lib/mock-data';
-import { FARDH_PRAYERS, PRAYER_LABELS, DailyRecord } from '@/lib/types';
+import { GRID_CONGREGATION, PRAYER_LABELS, DailyRecord } from '@/lib/types';
 import styles from './dashboard.module.css';
 
 export default function Dashboard() {
@@ -33,7 +33,7 @@ export default function Dashboard() {
 
   // Prayer completion per prayer
   const prayerStats = useMemo(() => {
-    return FARDH_PRAYERS.map(prayer => {
+    return GRID_CONGREGATION.map(prayer => {
       const total = monthRecords.filter(r => r[prayer] !== null).length;
       const done = monthRecords.filter(r => r[prayer] === 1).length;
       return {

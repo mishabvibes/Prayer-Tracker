@@ -87,7 +87,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setIsLoggedIn(true);
         setLoginRole('parent');
         setParentStudentId(studentId);
-        
+
         // Load parent data on refresh
         const { data: studentRow } = await supabase.from('students').select('*').eq('id', studentId).single();
         if (studentRow) {
@@ -140,7 +140,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ─── Load teacher profile + class ─────────────────────────────

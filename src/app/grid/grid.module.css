@@ -146,67 +146,7 @@
   color: var(--text-tertiary);
 }
 
-/* ─── Attendance Cell ────────────────────────────────────────── */
-.attendanceSelect {
-  appearance: none;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 0.75rem;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  transition: all var(--transition-fast);
-  color: white;
-  min-width: 80px;
-}
-
-.attendancePresent {
-  background: rgba(52, 211, 153, 0.15);
-  border-color: rgba(52, 211, 153, 0.2);
-  color: var(--success);
-}
-
-.attendanceLate {
-  background: rgba(251, 191, 36, 0.15);
-  border-color: rgba(251, 191, 36, 0.2);
-  color: var(--warning);
-}
-
-.attendanceAbsent {
-  background: rgba(248, 113, 113, 0.15);
-  border-color: rgba(248, 113, 113, 0.2);
-  color: var(--danger);
-}
-
-/* ─── Behaviour Score ────────────────────────────────────────── */
-.behaviourDots {
-  display: flex;
-  gap: 3px;
-  align-items: center;
-}
-
-.behDot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  background: transparent;
-  padding: 0;
-}
-
-.behDot:hover {
-  border-color: var(--accent-400);
-  transform: scale(1.2);
-}
-
-.behDotActive {
-  background: var(--accent-400);
-  border-color: var(--accent-400);
-  box-shadow: 0 0 6px rgba(251, 191, 36, 0.3);
-}
+/* (Status & Score sections removed) */
 
 /* ─── Day Selector ───────────────────────────────────────────── */
 .dayTabs {

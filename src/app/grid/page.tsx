@@ -4,8 +4,9 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useApp } from '@/lib/context';
 import {
-  FARDH_PRAYERS, RAWATIB_PRAYERS, JAMAA_PRAYERS,
-  PRAYER_LABELS, DailyRecord, AttendanceStatus, PrayerField,
+  GRID_DAILY, GRID_CONGREGATION, GRID_RAWATIB,
+  GRID_ADHKAR, GRID_LESSONS,
+  PRAYER_LABELS, DailyRecord, PrayerField,
 } from '@/lib/types';
 import styles from './grid.module.css';
 
@@ -53,43 +54,29 @@ export default function GridPage() {
       id: `rec-${Date.now()}-${Math.random().toString(36).slice(2)}`,
       studentId,
       date: dateStr,
+      // Legacy
       fajr: null, dhuhr: null, asr: null, maghrib: null, isha: null,
       rawatibFajr: null, rawatibDhuhr: null, rawatibAsr: null, rawatibMaghrib: null,
+      // 1. Daily
+      dailyCommitment: null, oneJuzQuran: null, ghusl: null, duha: null,
+      // 2. Congregation
       jamaaFajr: null, jamaaDhuhr: null, jamaaAsr: null, jamaaMaghrib: null, jamaaIsha: null,
+      // 3. Sunnah Rawatib
+      beforeDhuhr: null, afterDhuhr: null, beforeAsr: null,
+      beforeMaghrib: null, afterMaghrib: null, beforeIsha: null,
+      sunnahAfterIsha: null, sunnahBeforeFajr: null,
+      // 4. Adhkar & Ibadah
+      tasbih: null, witr: null, hizbAlBahr: null, ratibAlHaddad: null,
+      // 5. Lessons & Other
+      firstLesson: null, secondLesson: null, waqtAlFaraj: null, reading: null,
+      // Legacy
+      adhkar: null, dawrah: null,
       attendance: null, behaviourScore: null, notes: '', recordedBy: teacher?.id || '',
       [field]: next,
     };
 
     updateRecord(record);
-  }, [getRecord, dateStr, updateRecord]);
-
-  const setAttendance = useCallback((studentId: string, status: AttendanceStatus) => {
-    const existing = getRecord(studentId);
-    const record: DailyRecord = existing ? { ...existing, attendance: status } : {
-      id: `rec-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      studentId,
-      date: dateStr,
-      fajr: null, dhuhr: null, asr: null, maghrib: null, isha: null,
-      rawatibFajr: null, rawatibDhuhr: null, rawatibAsr: null, rawatibMaghrib: null,
-      jamaaFajr: null, jamaaDhuhr: null, jamaaAsr: null, jamaaMaghrib: null, jamaaIsha: null,
-      attendance: status, behaviourScore: null, notes: '', recordedBy: teacher?.id || '',
-    };
-    updateRecord(record);
-  }, [getRecord, dateStr, updateRecord]);
-
-  const setBehaviour = useCallback((studentId: string, score: number) => {
-    const existing = getRecord(studentId);
-    const record: DailyRecord = existing ? { ...existing, behaviourScore: score } : {
-      id: `rec-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      studentId,
-      date: dateStr,
-      fajr: null, dhuhr: null, asr: null, maghrib: null, isha: null,
-      rawatibFajr: null, rawatibDhuhr: null, rawatibAsr: null, rawatibMaghrib: null,
-      jamaaFajr: null, jamaaDhuhr: null, jamaaAsr: null, jamaaMaghrib: null, jamaaIsha: null,
-      attendance: null, behaviourScore: score, notes: '', recordedBy: teacher?.id || '',
-    };
-    updateRecord(record);
-  }, [getRecord, dateStr, updateRecord]);
+  }, [getRecord, dateStr, updateRecord, teacher]);
 
   const navigateMonth = (delta: number) => {
     let m = selectedMonth + delta;
@@ -176,36 +163,47 @@ export default function GridPage() {
             <thead>
               <tr>
                 <th className={styles.stickyCol} rowSpan={2}>Student</th>
-                <th className={styles.groupHeader} colSpan={5} style={{ borderColor: 'var(--primary-400)', color: 'var(--primary-300)' }}>
-                  Fardh Prayers
+                {/* 1. Daily — العهد، القرآن، الاغتسال، الضحى */}
+                <th className={styles.groupHeader} colSpan={4} style={{ borderColor: '#fbbf24', color: '#fbbf24' }}>
+                  Daily
                 </th>
-                <th className={styles.groupHeader} colSpan={4} style={{ borderColor: 'var(--accent-400)', color: 'var(--accent-400)' }}>
+                {/* 2. Congregation — صلاة الجماعة */}
+                <th className={styles.groupHeader} colSpan={5} style={{ borderColor: 'var(--primary-400)', color: 'var(--primary-300)' }}>
+                  Congregation
+                </th>
+                {/* 3. Sunnah Rawatib — السنن الرواتب */}
+                <th className={styles.groupHeader} colSpan={8} style={{ borderColor: 'var(--accent-400)', color: 'var(--accent-400)' }}>
                   Sunnah Rawatib
                 </th>
-                <th className={styles.groupHeader} colSpan={5} style={{ borderColor: 'var(--info)', color: 'var(--info)' }}>
-                  Congregation (Jamaa)
+                {/* 4. Adhkar & Ibadah — أذكار وعبادات */}
+                <th className={styles.groupHeader} colSpan={4} style={{ borderColor: '#a78bfa', color: '#a78bfa' }}>
+                  Adhkar & Ibadah
                 </th>
-                <th rowSpan={2} style={{ textAlign: 'center' }}>Status</th>
-                <th rowSpan={2} style={{ textAlign: 'center' }}>Score</th>
+                {/* 5. Lessons & Other — الدروس وأخرى */}
+                <th className={styles.groupHeader} colSpan={4} style={{ borderColor: '#38bdf8', color: '#38bdf8' }}>
+                  Lessons & Other
+                </th>
               </tr>
               <tr>
-                {FARDH_PRAYERS.map(p => (
+                {GRID_DAILY.map(p => (
+                  <th key={p} style={{ textAlign: 'center', color: '#fbbf24' }}>{PRAYER_LABELS[p]}</th>
+                ))}
+                {GRID_CONGREGATION.map(p => (
                   <th key={p} style={{ textAlign: 'center', color: 'var(--primary-200)' }}>{PRAYER_LABELS[p]}</th>
                 ))}
-                {RAWATIB_PRAYERS.map(p => (
+                {GRID_RAWATIB.map(p => (
                   <th key={p} style={{ textAlign: 'center', color: 'var(--accent-400)' }}>{PRAYER_LABELS[p]}</th>
                 ))}
-                {JAMAA_PRAYERS.map(p => (
-                  <th key={p} style={{ textAlign: 'center', color: 'var(--info)' }}>{PRAYER_LABELS[p]}</th>
+                {GRID_ADHKAR.map(p => (
+                  <th key={p} style={{ textAlign: 'center', color: '#a78bfa' }}>{PRAYER_LABELS[p]}</th>
+                ))}
+                {GRID_LESSONS.map(p => (
+                  <th key={p} style={{ textAlign: 'center', color: '#38bdf8' }}>{PRAYER_LABELS[p]}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {students.map((student, idx) => {
-                const record = getRecord(student.id);
-                const attendance = record?.attendance || null;
-                const behaviour = record?.behaviourScore || null;
-
                 return (
                   <tr key={student.id} className="animate-in" style={{ animationDelay: `${idx * 0.02}s` }}>
                     <td className={styles.stickyCol}>
@@ -229,47 +227,20 @@ export default function GridPage() {
                       </div>
                     </td>
 
-                    {/* Fardh */}
-                    {FARDH_PRAYERS.map(p => renderPrayerCell(student.id, p))}
+                    {/* 1. Daily */}
+                    {GRID_DAILY.map(p => renderPrayerCell(student.id, p))}
 
-                    {/* Rawatib */}
-                    {RAWATIB_PRAYERS.map(p => renderPrayerCell(student.id, p))}
+                    {/* 2. Congregation */}
+                    {GRID_CONGREGATION.map(p => renderPrayerCell(student.id, p))}
 
-                    {/* Jamaa */}
-                    {JAMAA_PRAYERS.map(p => renderPrayerCell(student.id, p))}
+                    {/* 3. Sunnah Rawatib */}
+                    {GRID_RAWATIB.map(p => renderPrayerCell(student.id, p))}
 
-                    {/* Attendance */}
-                    <td style={{ textAlign: 'center' }}>
-                      <select
-                        className={`${styles.attendanceSelect} ${
-                          attendance === 'present' ? styles.attendancePresent :
-                          attendance === 'late' ? styles.attendanceLate :
-                          attendance === 'absent' ? styles.attendanceAbsent : ''
-                        }`}
-                        value={attendance || ''}
-                        onChange={e => setAttendance(student.id, e.target.value as AttendanceStatus)}
-                        style={!attendance ? { background: 'rgba(255,255,255,0.05)', color: 'var(--text-tertiary)' } : {}}
-                      >
-                        <option value="">—</option>
-                        <option value="present">Present</option>
-                        <option value="late">Late</option>
-                        <option value="absent">Absent</option>
-                      </select>
-                    </td>
+                    {/* 4. Adhkar & Ibadah */}
+                    {GRID_ADHKAR.map(p => renderPrayerCell(student.id, p))}
 
-                    {/* Behaviour */}
-                    <td>
-                      <div className={styles.behaviourDots}>
-                        {[1, 2, 3, 4, 5].map(score => (
-                          <button
-                            key={score}
-                            className={`${styles.behDot} ${behaviour !== null && score <= behaviour ? styles.behDotActive : ''}`}
-                            onClick={() => setBehaviour(student.id, score)}
-                            title={`${score}/5`}
-                          />
-                        ))}
-                      </div>
-                    </td>
+                    {/* 5. Lessons & Other */}
+                    {GRID_LESSONS.map(p => renderPrayerCell(student.id, p))}
                   </tr>
                 );
               })}
